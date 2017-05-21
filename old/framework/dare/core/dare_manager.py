@@ -42,10 +42,10 @@ class DareManager(object):
         self.pilot_compute_service = PilotComputeService(coordination_url=COORDINATION_URL)
         self.pilot_data_service = PilotDataService(coordination_url=COORDINATION_URL)
 
-        for compute_pilot, desc in self.workflow.compute_pilot_repo.items():
+        for compute_pilot, desc in list(self.workflow.compute_pilot_repo.items()):
             self.pilot_compute_service.create_pilot(pilot_compute_description=desc)
 
-        for data_pilot, desc in self.workflow.data_pilot_repo.items():
+        for data_pilot, desc in list(self.workflow.data_pilot_repo.items()):
             self.data_pilot_service_repo.append(self.pilot_data_service.create_pilot(pilot_data_description=desc))
 
         self.compute_data_service = ComputeDataServiceDecentral()
@@ -56,7 +56,7 @@ class DareManager(object):
         self.step_start_lock = threading.RLock()
         self.step_run_lock = threading.RLock()
 
-        for step_id in self.workflow.step_units_repo.keys():
+        for step_id in list(self.workflow.step_units_repo.keys()):
                 darelogger.info(" Sumitted step %s " % step_id)
                 self.step_start_lock.acquire()
                 self.start_thread_step_id = step_id
@@ -65,7 +65,7 @@ class DareManager(object):
                 self.step_threads[step_id].start()
 
         while(1):
-            count_step = [v.is_alive() for k, v in self.step_threads.items()]
+            count_step = [v.is_alive() for k, v in list(self.step_threads.items())]
             darelogger.info('count_step %s' % count_step)
             if not True in count_step and len(count_step) > 0:
                 break
@@ -179,7 +179,7 @@ class DareManager(object):
         if message:
             darelogger.debug(message)
         darelogger.debug("Terminating steps")
-        for step, thread  in self.step_threads.items():
+        for step, thread  in list(self.step_threads.items()):
             darelogger.debug("Stoppping step %s" % step)
             thread._Thread__stop()
 

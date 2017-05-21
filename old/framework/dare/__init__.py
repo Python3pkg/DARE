@@ -7,7 +7,7 @@ __version_info__ = ('0', '8', '0176')
 __version__ = '.'.join(__version_info__)
 
 import os
-import ConfigParser
+import configparser
 
 from .helpers.misc import darelogger
 
@@ -23,7 +23,7 @@ if not os.path.exists(_conf_file):
 
 darelogger.info("Loading settings in %s" % _conf_file)
 
-cfgparser = ConfigParser.ConfigParser()
+cfgparser = configparser.ConfigParser()
 cfgparser.read(_conf_file)
 cfgdict = cfgparser.defaults()
 COORDINATION_URL = str(cfgdict.get('coordination_url'))

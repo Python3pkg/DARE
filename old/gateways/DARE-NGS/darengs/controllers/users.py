@@ -4,7 +4,7 @@ import sys
 import getopt
 import django.http
 import logging
-import commands
+import subprocess
 
 
 import darengs.model as model
@@ -81,16 +81,16 @@ def authenticate_user(email, password):
     try:
        
         a_user = auth_user.filter(model.user.email == str(email)).one()
-        print a_user.id
+        print(a_user.id)
     except:
-        print "except"   
+        print("except")   
         return "invalid"
 
     if (a_user.password != str(password)):
-        print "epass"
+        print("epass")
         return "invalid"
         
-    print "hell2",a_user.id
+    print("hell2",a_user.id)
     return a_user.id
 
 def validate_email(email):
@@ -112,7 +112,7 @@ class UsersController(BaseController):
         if user:
             request.environ['REMOTE_USER'] = user
             c.userid = user
-            print "userid: %s"%user
+            print("userid: %s"%user)
         else:
             c.userid = "false"
     def __init__(self):
@@ -165,11 +165,11 @@ class UsersController(BaseController):
 
                 userid = authenticate_user(c.form.cleaned_data['email'], \
                          c.form.cleaned_data['password'])
-                print "hellooooo", c.form.cleaned_data['email'], c.form.cleaned_data['password']
+                print("hellooooo", c.form.cleaned_data['email'], c.form.cleaned_data['password'])
                 if (userid != "invalid" ):
                     session['userid'] = userid
                     session.save()
-                    print session['userid']
+                    print(session['userid'])
                     redirect(url('/'))
                     c.login = "valid"
                 else:
@@ -198,7 +198,7 @@ class UsersController(BaseController):
 
                 if (validate_email(c.form.cleaned_data['email'])):
                     c.email = "invalid"
-                    print "invalid email"
+                    print("invalid email")
                     return render("/users/register.mako")
 
 
@@ -206,7 +206,7 @@ class UsersController(BaseController):
 
                 newuser.organization = c.form.cleaned_data['organization']
                 newuser.password =      c.form.cleaned_data['password']
-                print "c.form.cleaned_data['password']", c.form.cleaned_data['password']
+                print("c.form.cleaned_data['password']", c.form.cleaned_data['password'])
                 newuser.salt =  "salt"
                 meta.Session.add(newuser)
                 meta.Session.commit()

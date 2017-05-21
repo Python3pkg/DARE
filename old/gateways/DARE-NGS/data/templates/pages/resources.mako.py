@@ -23,14 +23,14 @@ def _mako_generate_namespaces(context):
     pass
 def _mako_inherit(template, context):
     _mako_generate_namespaces(context)
-    return runtime._inherit_from(context, u'/base.mako', _template_uri)
+    return runtime._inherit_from(context, '/base.mako', _template_uri)
 def render_body(context,**pageargs):
     context.caller_stack._push_frame()
     try:
         __M_locals = __M_dict_builtin(pageargs=pageargs)
         __M_writer = context.writer()
         # SOURCE LINE 1
-        __M_writer(u'\n \n\n   <table >\n      <tr>\n        <th >  Machine          </th>\n        <th >  Location          </th>\n        <th >  Info             </th>\n        <th >  Job Submission Type   </th>\n\n      </tr>\n\n      <tr>\n        <td > Cyder   </td>\n        <td > LSU/CCT  </td>\n        <td > 12 core, 5.2 TB HD  </td>\n        <td > SAGA/SSH   </td>\n      </tr>\n      <tr>\n        <td >  Queen Bee   </td>\n        <td > LONI  </td>\n        <td > 8 core/node, 512 Nodes   </td>\n        <td >  GLOBUS/SAGA   </td>\n      </tr>\n      <tr>\n        <td >  Ranger   </td>\n        <td >  TERAGRID  </td>\n        <td > 16 core/node,   </td>\n        <td >  GLOBUS/SAGA   </td>\n      </tr>\n\n\n\n    </table>\n\n\n\n\n')
+        __M_writer('\n \n\n   <table >\n      <tr>\n        <th >  Machine          </th>\n        <th >  Location          </th>\n        <th >  Info             </th>\n        <th >  Job Submission Type   </th>\n\n      </tr>\n\n      <tr>\n        <td > Cyder   </td>\n        <td > LSU/CCT  </td>\n        <td > 12 core, 5.2 TB HD  </td>\n        <td > SAGA/SSH   </td>\n      </tr>\n      <tr>\n        <td >  Queen Bee   </td>\n        <td > LONI  </td>\n        <td > 8 core/node, 512 Nodes   </td>\n        <td >  GLOBUS/SAGA   </td>\n      </tr>\n      <tr>\n        <td >  Ranger   </td>\n        <td >  TERAGRID  </td>\n        <td > 16 core/node,   </td>\n        <td >  GLOBUS/SAGA   </td>\n      </tr>\n\n\n\n    </table>\n\n\n\n\n')
         return ''
     finally:
         context.caller_stack._pop_frame()

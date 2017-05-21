@@ -1,4 +1,4 @@
-from default_settings import *
+from .default_settings import *
 import os
 
 if os.environ.get('DEVELOPMENT'):

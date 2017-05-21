@@ -1,7 +1,7 @@
 import os
 import sys
 import time
-import ConfigParser
+import configparser
 import uuid
 #import dare
 import optparse
@@ -39,7 +39,7 @@ if __name__ == '__main__':
     (options, args) = parser.parse_args()
 
 
-    job_config = ConfigParser.ConfigParser()
+    job_config = configparser.ConfigParser()
     confjob = options.conf_job
     job_config.read(confjob)
 
@@ -51,7 +51,7 @@ if __name__ == '__main__':
     try:
         from dare import dict_section, dare
     except:
-        print "failed to import dare"
+        print("failed to import dare")
         sys.exit(0)
     job_conf = dict_section( job_config, "JOB")
 
@@ -85,7 +85,7 @@ if __name__ == '__main__':
     working_directory = os.path.join(DARE_HOME, "darefiles/", str(jobid))
 
     #start building the dare conf file for dare
-    dare_config = ConfigParser.ConfigParser()
+    dare_config = configparser.ConfigParser()
 
     control_input = job_conf["control_input_name"]
     control_input_name = control_input.split(".fastq")[0]
@@ -97,7 +97,7 @@ if __name__ == '__main__':
 
     #read the resource conf file
     resource_conf_file = os.path.join(DARE_HOME, 'examples/chipseq/resource.cfg')
-    resource_config = ConfigParser.ConfigParser()
+    resource_config = configparser.ConfigParser()
     resource_config.read(resource_conf_file)
 
     for i in range (0,len(resources_used)):
@@ -215,7 +215,7 @@ if __name__ == '__main__':
 
     #add tasks for each step
     step_conf_file = os.path.join(DARE_HOME, 'examples/chipseq/chipseq_1_resource.cfg')
-    step_config = ConfigParser.ConfigParser()
+    step_config = configparser.ConfigParser()
     step_config.read(step_conf_file)
     step_conf = dict_section( step_config, "common")
     step_resource_conf = dict_section(step_config, resources_used[0])
@@ -223,7 +223,7 @@ if __name__ == '__main__':
          args = "arguments"
     else:
          args = "arguments_1"
-    print "step_resource_conf", step_resource_conf["ngsdata"]
+    print("step_resource_conf", step_resource_conf["ngsdata"])
 
     if (job_conf["reference_genome"] == "ws200"):
        if job_conf["mapping"]=="bowtie":
@@ -289,7 +289,7 @@ if __name__ == '__main__':
 
     #add tasks for each step
     step_conf_file = os.path.join(DARE_HOME, 'examples/chipseq/chipseq_2_resource.cfg')
-    step_config = ConfigParser.ConfigParser()
+    step_config = configparser.ConfigParser()
     step_config.read(step_conf_file)
     step_conf = dict_section( step_config, "common")
     step_resource_conf = dict_section(step_config, resources_used[0])
@@ -348,7 +348,7 @@ if __name__ == '__main__':
 
     #add tasks for each step
     step_conf_file = os.path.join(DARE_HOME, 'examples/chipseq/chipseq_3_resource.cfg')
-    step_config = ConfigParser.ConfigParser()
+    step_config = configparser.ConfigParser()
     step_config.read(step_conf_file)
     step_conf = dict_section( step_config, "common")
     step_resource_conf = dict_section(step_config, resources_used[0])
@@ -403,7 +403,7 @@ if __name__ == '__main__':
 
         #add tasks for each step
     step_conf_file = os.path.join(DARE_HOME, 'examples/chipseq/chipseq_4_resource.cfg')
-    step_config = ConfigParser.ConfigParser()
+    step_config = configparser.ConfigParser()
     step_config.read(step_conf_file)
     step_conf = dict_section( step_config, "common")
     step_resource_conf = dict_section(step_config, resources_used[0])
@@ -456,7 +456,7 @@ if __name__ == '__main__':
 
     #add tasks for each step
     step_conf_file = os.path.join(DARE_HOME, 'examples/chipseq/chipseq_5_resource.cfg')
-    step_config = ConfigParser.ConfigParser()
+    step_config = configparser.ConfigParser()
     step_config.read(step_conf_file)
     step_conf = dict_section( step_config, "common")
     step_resource_conf = dict_section(step_config, resources_used[0])
@@ -514,7 +514,7 @@ if __name__ == '__main__':
 
     #add tasks for each step
     step_conf_file = os.path.join(DARE_HOME, 'examples/chipseq/chipseq_6_resource.cfg')
-    step_config = ConfigParser.ConfigParser()
+    step_config = configparser.ConfigParser()
     step_config.read(step_conf_file)
     step_conf = dict_section( step_config, "common")
     step_resource_conf = dict_section(step_config, resources_used[0])
@@ -558,7 +558,7 @@ if __name__ == '__main__':
 
     #add tasks for each step
     step_conf_file = os.path.join(DARE_HOME, 'examples/chipseq/chipseq_bowtie_resource.cfg')
-    step_config = ConfigParser.ConfigParser()
+    step_config = configparser.ConfigParser()
     step_config.read(step_conf_file)
     step_conf = dict_section( step_config, "common")
     step_resource_conf = dict_section(step_config, resources_used[0])
@@ -643,7 +643,7 @@ if __name__ == '__main__':
         dare_config.write(dare_cfgfile)
         dare_cfgfile.close()
     except:
-        print "Could not write DARE config file"
+        print("Could not write DARE config file")
         sys.exit(0);
 
     #start dare

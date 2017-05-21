@@ -58,6 +58,6 @@ def load_environment(global_conf, app_conf):
     # any Pylons config options)
     
     p1 = Popen(["python", os.path.join(DARENGS_HOME,"darengs","lib", "JobMonitor.py")])
-    print "p1.pid",p1.pid
+    print("p1.pid",p1.pid)
 
     return config

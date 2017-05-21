@@ -14,12 +14,12 @@ __license__ = "MIT"
 
 class DareLogger():
     def debug(self, p):
-        print "DARE-Debug-%s" % p
+        print("DARE-Debug-%s" % p)
 
     def info(self, p):
-        print "DARE-info-%s" % p
+        print("DARE-info-%s" % p)
 
     def error(self, p):
-        print "DARE-error-%s" % p
+        print("DARE-error-%s" % p)
 
 darelogger = DareLogger()

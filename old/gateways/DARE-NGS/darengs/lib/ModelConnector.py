@@ -22,4 +22,4 @@ except:
     conf = appconfig("config:"+ DARENGS_HOME +"/ngsdevel.ini", relative_to='.')
     load_environment(conf.global_conf, conf.local_conf)
     
-from ModelHelper import *
+from .ModelHelper import *

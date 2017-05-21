@@ -151,7 +151,7 @@ def update_job_pid(jobid, pid):
     """updates a job status from the queue"""
     jobs_q =  meta.Session.query(model.job)
     jq =  jobs_q.filter(model.job.id==jobid).one()
-    print "updating",jobid, pid
+    print("updating",jobid, pid)
     jq.dareprocess_id = str(pid)
     meta.Session.commit()
 
@@ -185,7 +185,7 @@ def check_new_jobs():
             newjobids.append(jq.id)
     else:
         newjobids.append("nojobs")
-    print "check new jobs Done",newjobids
+    print("check new jobs Done",newjobids)
     return newjobids
 
 def get_job_pid(jobid):

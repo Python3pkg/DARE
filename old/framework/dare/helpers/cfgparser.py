@@ -4,7 +4,7 @@ __copyright_ = "Copyright 2011-2012, Sharath Maddineni"
 __license__ = "MIT"
 
 
-import ConfigParser
+import configparser
 import os
 import sys
 from dare import darelogger
@@ -18,7 +18,7 @@ class CfgParser(object):
             raise RuntimeError("Cannot find %s " % self.conf_file)
 
         #parse job conf file
-        self.config = ConfigParser.ConfigParser()
+        self.config = configparser.ConfigParser()
         self.config.read(self.conf_file)
 
     def SectionDict(self, section):
@@ -31,14 +31,14 @@ class CfgParser(object):
 
 class CfgWriter(object):
     def __init__(self, conffile):
-        self.dare_config = ConfigParser.ConfigParser()
+        self.dare_config = configparser.ConfigParser()
         self.conffile = conffile
 
     def add_section(self, section_params):
         section_name = section_params.pop("name")
         self.dare_config.add_section(section_name)
 
-        for k, v in section_params.items():
+        for k, v in list(section_params.items()):
             self.dare_config.set(section_name, k, v)
 
     def write(self):

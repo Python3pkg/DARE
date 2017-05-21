@@ -23,12 +23,12 @@ DEFAULT_CUD = {"executable": "/bin/date",
 def start_run_pilot(pilot_id, coordination_url=COORD_URL):
     pilot = DareBigJobPilot.objects.get(id=pilot_id)
     pilot_compute_service = PilotComputeService(coordination_url=COORD_URL)
-    print pilot.get_pilot_info()
+    print(pilot.get_pilot_info())
     pilot_compute = pilot_compute_service.create_pilot(pilot_compute_description=pilot.get_pilot_info())
     pilot.pilot_url = pilot_compute.get_url()
     pilot.status = "Submitted"
     pilot.save()
-    print("Started Pilot: %s " % (pilot.pilot_url), pilot.id)
+    print(("Started Pilot: %s " % (pilot.pilot_url), pilot.id))
 
 
 @task
@@ -49,7 +49,7 @@ def update_status_run_pilot(pilot_id):
             pilot.status = "New"
 
     pilot.save()
-    print("Stopped Pilot: %s " % (pilot_url), pilot.id)
+    print(("Stopped Pilot: %s " % (pilot_url), pilot.id))
 
 
 @task
@@ -63,7 +63,7 @@ def stop_run_pilot(pilot_id):
     pilot.status = "Stopped"
     pilot.save()
 
-    print("Stopped Pilot: %s " % (pilot_url), pilot.id)
+    print(("Stopped Pilot: %s " % (pilot_url), pilot.id))
 
 
 @task
@@ -84,7 +84,7 @@ def start_run_task(task_id):
         taskinfo.cu_url = ''
         for cu in cus:
             compute_unit = pilot_compute.submit_compute_unit(cu)
-            print "Started ComputeUnit: %s" % (compute_unit.get_url())
+            print("Started ComputeUnit: %s" % (compute_unit.get_url()))
             taskinfo.cu_url += '@@@' + compute_unit.get_url()
         taskinfo.status = 'Submitted'
         taskinfo.save()
@@ -100,12 +100,12 @@ def stop_run_task(task_id):
         if len(cu_url) > 0:
             compute_unit = ComputeUnit(cu_url=str(cu_url))
             compute_unit.cancel()
-            print(compute_unit.get_state())
+            print((compute_unit.get_state()))
     taskinfo.cu_url = ""
     taskinfo.status = "Stopped"
     taskinfo.save()
 
-    print("Stopped Task: ", taskinfo.id)
+    print(("Stopped Task: ", taskinfo.id))
 
 
 @task
@@ -128,7 +128,7 @@ def update_status_run_task(task_id):
 
     taskinfo.status = all_status
     taskinfo.save()
-    print("Updated Status Task: ", task_id)
+    print(("Updated Status Task: ", task_id))
 
 CONDOR_URL = "condor://localhost?WhenToTransferOutput=ON_EXIT&should_transfer_files=YES&notification=Always"
 
@@ -168,14 +168,14 @@ def start_run_osg_task(task_id):
     sleepjob = js.create_job(jd)
 
     # check our job's id and state
-    print "Job ID    : %s" % (sleepjob.id)
-    print "Job State : %s" % (sleepjob.state)
+    print("Job ID    : %s" % (sleepjob.id))
+    print("Job State : %s" % (sleepjob.state))
 
-    print "\n...starting job...\n"
+    print("\n...starting job...\n")
     sleepjob.run()
 
-    print "Job ID    : %s" % (sleepjob.id)
-    print "Job State : %s" % (sleepjob.state)
+    print("Job ID    : %s" % (sleepjob.id))
+    print("Job State : %s" % (sleepjob.state))
 
 
 def get_osg_task_status(task_id):

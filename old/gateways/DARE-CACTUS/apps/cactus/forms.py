@@ -41,7 +41,7 @@ class CactusJobForm(forms.Form):
     def save(self, request):
         job = Job(user=request.user, status="New", name=self.cleaned_data['name'])
         job.save()
-        for key, value in self.cleaned_data.items():
+        for key, value in list(self.cleaned_data.items()):
             if key in ['name']:
                 continue
             if key.lower() == 'parameterfile':

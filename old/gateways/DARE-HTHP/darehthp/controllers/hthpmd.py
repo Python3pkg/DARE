@@ -4,7 +4,7 @@ import sys
 import os
 import getopt
 import logging
-import commands
+import subprocess
 from subprocess import Popen, call, PIPE
 
 from pylons import request, response, session, tmpl_context as c, url
@@ -111,13 +111,13 @@ class HthpmdController(BaseController):
 
         #check job is already done important
 
-        print job_pid, "job_pid"
+        print(job_pid, "job_pid")
         if job_pid is None:
            redirect(url('/hthpmd/job_table_view'))
 
         if not (os.path.exists("/proc/"+str(job_pid))):
             update_job_status(jobid, "3")
-            print "\n update status failed\n"
+            print("\n update status failed\n")
 
         redirect(url('/hthpmd/job_table_view'))
 
@@ -136,7 +136,7 @@ class HthpmdController(BaseController):
            action  = request.params['action']
            num = request.POST["numresources"]
            numf = request.POST["numfiles"]
-           print "numf", numf
+           print("numf", numf)
            c.form  = NAMDForm(request.POST or None, numresources=num,numfiles=numf)
         except:
            c.form  = NAMDForm(request.POST or None)
@@ -263,7 +263,7 @@ class HthpmdController(BaseController):
             if not (inftype == 'resource_type'):
                 add_another   = request.POST['add_another']
 
-                print "\n\n\n inftype, add_another", inftype, add_another
+                print("\n\n\n inftype, add_another", inftype, add_another)
             else:
                 resource_type = request.POST['resource_type']
 

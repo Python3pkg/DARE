@@ -77,7 +77,7 @@ class DareBigJobPilot(BaseDareBigJobPilot):
                         'number_of_processes': self.number_of_processes,
                         'cores_per_node': self.cores_per_node
                         }
-        for key in pilotdescdict.keys():
+        for key in list(pilotdescdict.keys()):
             pilotdescdict[key] = str(pilotdescdict[key])
         return pilotdescdict
 

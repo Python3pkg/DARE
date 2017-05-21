@@ -12,14 +12,14 @@ import pdb
 import traceback
 import logging
 
-import ConfigParser
+import configparser
 
 
 if os.getenv("DARENGS_HOME")!=None:
     DARENG_HOME= os.getenv("DARENGS_HOME")
 else:
     DARENGS_HOME = os.path.abspath(os.path.join(os.path.abspath(__file__),"..", "..", "..", ".."))
-print "DARENGS_HOME", DARENGS_HOME
+print("DARENGS_HOME", DARENGS_HOME)
 sys.path.insert(0,DARENGS_HOME)
 sys.path.insert(0,BIGJOB_HOME)
 
@@ -28,7 +28,7 @@ try:
     load_update_env = "true"
 except:
     load_update_env = "false"
-print "load_update_env", load_update_env
+print("load_update_env", load_update_env)
 
 
 #add bigjob path
@@ -40,13 +40,13 @@ else:
 try:
     import many_job
 except ImportError:
-    print "failed to import bigjob"
+    print("failed to import bigjob")
     sys.exit()
 
 try:
     import saga
 except ImportError:
-    print "failed to import saga"
+    print("failed to import saga")
     sys.exit()
 
 
@@ -69,7 +69,7 @@ class dare(object):
         self.job_states = {}
 
         #parse job conf file
-        self.config = ConfigParser.ConfigParser()
+        self.config = configparser.ConfigParser()
         self.config.read(conf_file)
 
         self.job_conf = dict_section(self.config, "DAREJOB")
@@ -79,7 +79,7 @@ class dare(object):
 
         #create a logfile
         LOG_FILENAME = self.job_conf["log_filename"]
-        print LOG_FILENAME
+        print(LOG_FILENAME)
         self.logger = logging.getLogger('dare_multijob')
         hdlr = logging.FileHandler(LOG_FILENAME)
         formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
@@ -100,7 +100,7 @@ class dare(object):
                 resource_list.append([])
                 resource_list[i].append(dict_section(self.config,"resource_"+ str(i) ))
                 #create multiple manyjobs
-                print "Create manyjob service "
+                print("Create manyjob service ")
                 self.mjs.append(many_job.many_job_service(resource_list[i], None))
             total_number_of_jobs=0
 
@@ -171,13 +171,13 @@ class dare(object):
                 #for cloud files
                 cmd = "scp  -r -i /path/to/smaddi2.private %s %s"%(source_url, dest_url)
                 os.system(cmd)
-            except saga.exception, e:
+            except saga.exception as e:
                 error_msg = "File stage in failed : from "+ source_url + " to "+ dest_url
         elif (fs["fs_type"] =="gridftp"):
             try:
                 cmd = "globus-url-copy  -cd  %s %s"%(source_url, dest_url)
                 os.system(cmd)
-            except saga.exception, e:
+            except saga.exception as e:
                 error_msg = "File stage in failed : from "+ source_url + " to "+ dest_url
 
         elif (fs["fs_type"] == "scp"):
@@ -185,7 +185,7 @@ class dare(object):
                  cmd = "scp -r %s %s"%(source_url, dest_url)
                  self.logger.info(cmd)
                  os.system(cmd)
-             except saga.exception, e:
+             except saga.exception as e:
                  error_msg = "File stage in failed : from "+ source_url + " to "+ dest_url
         return None
 
@@ -202,7 +202,7 @@ class dare(object):
         jd.error = wu["error"]
         subjob = self.mjs[int(wu["resource"])].create_job(jd)
         subjob.run()
-        print "Submited sub-job "+ "."
+        print("Submited sub-job "+ ".")
         self.jobs.append(subjob)
         self.job_start_times[subjob]=time.time()
         self.job_states[subjob] = subjob.get_state()
@@ -214,26 +214,26 @@ class dare(object):
     #get the number of wus and wait till they finish
     def wait_for_wus(self,number_of_jobs):
 
-            print "************************ All Jobs submitted ************************" +  str(number_of_jobs)
+            print("************************ All Jobs submitted ************************" +  str(number_of_jobs))
             while 1:
                 finish_counter=0
                 result_map = {}
                 for i in range(0, number_of_jobs):
                     old_state = self.job_states[self.jobs[i]]
                     state = self.jobs[i].get_state()
-                    if result_map.has_key(state) == False:
+                    if (state in result_map) == False:
                         result_map[state]=0
                     result_map[state] = result_map[state]+1
                     #print "counter: " + str(i) + " job: " + str(jobs[i]) + " state: " + state
                     if old_state != state:
-                        print "Job " + str(self.jobs[i]) + " changed from: " + old_state + " to " + state
+                        print("Job " + str(self.jobs[i]) + " changed from: " + old_state + " to " + state)
                     if old_state != state and self.has_finished(state)==True:
-                         print "Job: " + str(self.jobs[i]) + " Runtime: " + str(time.time()-self.job_start_times[self.jobs[i]]) + " s."
+                         print("Job: " + str(self.jobs[i]) + " Runtime: " + str(time.time()-self.job_start_times[self.jobs[i]]) + " s.")
                     if self.has_finished(state)==True:
                          finish_counter = finish_counter + 1
                     self.job_states[self.jobs[i]]=state
 
-                print "Current states: " + str(result_map)
+                print("Current states: " + str(result_map))
                 time.sleep(5)
                 self.logger.info("Current states: " + str(result_map))
                 if finish_counter == number_of_jobs:

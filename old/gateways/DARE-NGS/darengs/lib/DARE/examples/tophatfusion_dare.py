@@ -1,6 +1,6 @@
 import os
 import time
-import ConfigParser
+import configparser
 import uuid
 import dare
 import optparse
@@ -22,7 +22,7 @@ if __name__ == '__main__':
     (options, args) = parser.parse_args()
 
 
-    job_config = ConfigParser.ConfigParser()
+    job_config = configparser.ConfigParser()
     confjob = options.conf_job
     job_config.read(confjob)
     job_conf = dict_section("JOB", job_config)
@@ -50,7 +50,7 @@ if __name__ == '__main__':
 
     #start building the conf file for dare
     dare_conffile =  os.path.join(working_directory, str(jobid) +"-darejob.cfg") 
-    config = ConfigParser.ConfigParser()
+    config = configparser.ConfigParser()
     cfgfile = open(dare_conffile,'w')
     
     #add most important section here
@@ -71,12 +71,12 @@ if __name__ == '__main__':
             if (x != (num_step_wus[i] -1)):
                 step_wus_string = step_wus_string + ", "
             wus_count = wus_count + 1
-        print step_wus_string    
+        print(step_wus_string)    
         config.set(section_name , "step_" + str(i), step_wus_string)   
     
     #read the resource conf file
     resource_conf_file = os.path.join(DARE_DIR, 'tophatfusion/resource.cfg')
-    resource_config = ConfigParser.ConfigParser()
+    resource_config = configparser.ConfigParser()
     resource_config.read(resource_conf_file)                  
        
     #define resource list based upon the tasks and given input
@@ -105,7 +105,7 @@ if __name__ == '__main__':
     
     #add tasks for each step
     step_conf_file = os.path.join(DARE_DIR, 'tophatfusion/tophatfusion_1_resource.cfg')
-    step_config = ConfigParser.ConfigParser()
+    step_config = configparser.ConfigParser()
     step_config.read(step_conf_file) 
     step_conf = dict_section("common", step_config)
     step_resource_conf = dict_section(resources_used[0], step_config)
@@ -166,7 +166,7 @@ if __name__ == '__main__':
     
     #adding step conf file into dict
     step_conf_file = os.path.join(DARE_DIR, 'tophatfusion/tophatfusion_2_resource.cfg')
-    step_config = ConfigParser.ConfigParser()
+    step_config = configparser.ConfigParser()
     step_config.read(step_conf_file) 
     step_conf = dict_section("common", step_config)
     step_resource_conf = dict_section(resources_used[0], step_config)

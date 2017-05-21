@@ -10,7 +10,7 @@ get_key = InvitationKey.objects.get_key
 
 
 def check_valid_key(request, *args, **kwargs):
-    print kwargs.get('username')
+    print(kwargs.get('username'))
     if not user_exists(username=kwargs.get('username')):
         if request.session.get('invitation_key') and is_key_valid(request.session['invitation_key']):
             return {}

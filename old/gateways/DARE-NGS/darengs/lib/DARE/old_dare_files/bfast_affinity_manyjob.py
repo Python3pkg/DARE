@@ -9,12 +9,12 @@ import traceback
 import bigjob
 import logging
 import many_job
-import ConfigParser
+import configparser
 import optparse
 import uuid
 
 def initialize(conf_filename):
-    adams_config = ConfigParser.ConfigParser()
+    adams_config = configparser.ConfigParser()
     adams_config.read(conf_filename)
     sections = adams_config.sections()
     return adams_config
@@ -48,7 +48,7 @@ def sub_jobs_submit(job_type, subjobs_per_resource, number_of_jobs,jd_executable
          
             # create job description
             jd = saga.job.description()
-            print jd_executable_use
+            print(jd_executable_use)
             jd.executable = jd_executable_use
             jd.number_of_processes = jd_number_of_processes
             jd.spmd_variation = "single"
@@ -92,13 +92,13 @@ def sub_jobs_submit(job_type, subjobs_per_resource, number_of_jobs,jd_executable
                 jd.arguments = [""]
             
             jd.environment = ["affinity=affinity%s"%(affinity)]
-            print "affinity%s"%(affinity)
+            print("affinity%s"%(affinity))
             jd.working_directory = work_dir[affinity]
             jd.output =  os.path.join(work_dir[affinity], "stdout_" + job_type + "-"+ str(bfast_uuid)+"-"+ str(i) + ".txt")
             jd.error = os.path.join(work_dir[affinity], "stderr_"+ job_type + "-"+str(bfast_uuid)+ "-"+str(i) + ".txt")
             subjob = mjs.create_job(jd)
             subjob.run()
-            print "Submited sub-job " + "%d"%i + "."
+            print("Submited sub-job " + "%d"%i + ".")
          
             jobs.append(subjob)
             job_start_times[subjob]=time.time()
@@ -112,26 +112,26 @@ def sub_jobs_submit(job_type, subjobs_per_resource, number_of_jobs,jd_executable
             
         #number_of_jobs = int(end_of_subjobs) - int(start_of_subjobs)
         
-        print "************************ All Jobs submitted ************************" +  str(number_of_jobs)
+        print("************************ All Jobs submitted ************************" +  str(number_of_jobs))
         while 1:
             finish_counter=0
             result_map = {}
             for i in range(0, int(number_of_jobs)):
                 old_state = job_states[jobs[i]]
                 state = jobs[i].get_state()
-                if result_map.has_key(state) == False:
+                if (state in result_map) == False:
                     result_map[state]=0
                 result_map[state] = result_map[state]+1
                 #print "counter: " + str(i) + " job: " + str(jobs[i]) + " state: " + state
                 if old_state != state:
-                    print "Job " + str(jobs[i]) + " changed from: " + old_state + " to " + state
+                    print("Job " + str(jobs[i]) + " changed from: " + old_state + " to " + state)
                 if old_state != state and has_finished(state)==True:
-                     print "Job: " + str(jobs[i]) + " Runtime: " + str(time.time()-job_start_times[jobs[i]]) + " s."
+                     print("Job: " + str(jobs[i]) + " Runtime: " + str(time.time()-job_start_times[jobs[i]]) + " s.")
                 if has_finished(state)==True:
                      finish_counter = finish_counter + 1
                 job_states[jobs[i]]=state
 
-            print "Current states: " + str(result_map)
+            print("Current states: " + str(result_map))
             time.sleep(5)
             logger.info("Current states: " + str(result_map))
             if finish_counter == int(number_of_jobs):
@@ -193,7 +193,7 @@ if __name__ == "__main__":
     config = initialize(adams_conf)
     
     for machine in machines_used:
-        print machine
+        print(machine)
         work_dir.append(config.get(machine, 'work_dir'))
         #print "wor_dir"+work_dir
         machine_proxy.append(config.get(machine, 'machine_proxy'))
@@ -248,14 +248,14 @@ if __name__ == "__main__":
         i=0
         mjs = []
         for i in range(0,len(machines_used) ):
-            print machine_proxy[i]
+            print(machine_proxy[i])
             resource_list.append({"gram_url" : gram_url[i], "walltime": "80" ,
                                    "number_cores" : str(int(16)*2),
                                    "cores_per_node":cores_per_node[i],"allocation" : allocation[i],
                                    "queue" : queue[i], "re_agent": re_agent[i], "userproxy":machine_proxy[i], "working_directory": work_dir[i], "affinity" : "affinity%s"%(i)})
             logger.info("gram_url" + gram_url[i])
             logger.info("affinity%s"%(i))
-        print "Create manyjob service " 
+        print("Create manyjob service ") 
         mjs = many_job.many_job_service(resource_list, "advert.cct.lsu.edu")
             
             

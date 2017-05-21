@@ -4,7 +4,7 @@ import sys
 import os
 import getopt
 import logging
-import commands
+import subprocess
 from subprocess import Popen, call, PIPE
 
 from pylons import request, response, session, tmpl_context as c, url
@@ -87,7 +87,7 @@ class NgsController(BaseController):
         #todo delte the running bigjob here before deleting
 
         del_job(jobid)
-        print request.url
+        print(request.url)
         redirect(url('/ngs/job_table_view?page=%s'%(p)))
 
     #todo merge the three forms into one and use parameters
@@ -141,8 +141,8 @@ class NgsController(BaseController):
                 jobid =add_job(c.userid)
 
                 for key in c.form.cleaned_data:
-                    print "key", key
-                    print "value", c.form.cleaned_data[key]
+                    print("key", key)
+                    print("value", c.form.cleaned_data[key])
                     newjobinfo = model.jobinfo()
                     newjobinfo.key = key
                     newjobinfo.value = c.form.cleaned_data[key]
@@ -191,13 +191,13 @@ class NgsController(BaseController):
 
         #check job is already done important
 
-        print job_pid, "job_pid"
+        print(job_pid, "job_pid")
         if job_pid is None:
            redirect(url('/ngs/job_table_view'))
 
         if not (os.path.exists("/proc/"+str(job_pid))):
             update_job_status(jobid, "3")
-            print "\n update status failed\n"
+            print("\n update status failed\n")
 
         redirect(url('/ngs/job_table_view'))
 

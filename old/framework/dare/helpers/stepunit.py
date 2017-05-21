@@ -32,7 +32,7 @@ class StepUnit(object):
             "transfer_output_data_units":  step_info.get("transfer_output_data_units"),
             "start_after_steps": step_info.get("start_after_steps")
         }
-        print self.UnitInfo
+        print(self.UnitInfo)
 
     def get_step_id(self):
         return self.UnitInfo['step_id']

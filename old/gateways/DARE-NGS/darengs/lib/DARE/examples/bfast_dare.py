@@ -1,6 +1,6 @@
 import os
 import time
-import ConfigParser
+import configparser
 import uuid
 import dare
 import optparse
@@ -23,13 +23,13 @@ if __name__ == '__main__':
     parser.add_option("-c", "--conf_file", dest="conf_file", help="job configuration file")
     (options, args) = parser.parse_args()
 
-    config = ConfigParser.ConfigParser()
+    config = configparser.ConfigParser()
     conf_file = options.conf_file
     config.read(conf_file)
     
     #add most important section here
     conffile = "darefiles/jobconf/2-job.cfg" 
-    config = ConfigParser.ConfigParser()
+    config = configparser.ConfigParser()
     cfgfile = open(conffile,'w')
 
 
@@ -61,13 +61,13 @@ if __name__ == '__main__':
             step_wus_string = step_wus_string + "wu_" + str(x)
             if (x != (num_step_wus[i] -1)):
                 step_wus_string = step_wus_string + ", "
-        print step_wus_string    
+        print(step_wus_string)    
         config.set(section_name , "step_" + str(i), step_wus_string)   
     
     #read the resource conf file
     resource_conf_file = DARE_WD + 'tophat/input/resource.conf'
-    print resource_conf_file
-    resource_config = ConfigParser.ConfigParser()
+    print(resource_conf_file)
+    resource_config = configparser.ConfigParser()
     resource_config.read(resource_conf_file)                  
        
     #define resource list based upon the tasks and given input

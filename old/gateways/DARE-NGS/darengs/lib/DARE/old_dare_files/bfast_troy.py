@@ -12,7 +12,7 @@ import pdb
 import os
 import traceback
 import logging
-import ConfigParser
+import configparser
 import optparse
 import uuid
 
@@ -33,7 +33,7 @@ uows = []
 
 #initialize the conf files
 def initialize(conf_filename):
-    dare_config = ConfigParser.ConfigParser()
+    dare_config = configparser.ConfigParser()
     dare_config.read(conf_filename)
     sections = dare_config.sections()
     return dare_config
@@ -49,20 +49,20 @@ def has_finished(state):
 #TODO: should be SAGA based and pilot store
 def file_stage(source_url, dest_url):
 
-    print "(DEBUG) Now I am tranferring the files from %s to %s"%(source_url, dest_url)
+    print("(DEBUG) Now I am tranferring the files from %s to %s"%(source_url, dest_url))
     #fgeuca for clouds
     if dest_url.startswith("fgeuca"):
         try:
             #for cloud files
             cmd = "scp  -r -i /path/to/smaddi2.private %s %s"%(source_url, dest_url)
             os.system(cmd)
-        except saga.exception, e:
+        except saga.exception as e:
             error_msg = "File stage in failed : from "+ source_url + " to "+ dest_url
     else:
         try:
             cmd = "globus-url-copy  -cd  %s %s"%(source_url, dest_url)
             os.system(cmd)
-        except saga.exception, e:
+        except saga.exception as e:
             error_msg = "File stage in failed : from "+ source_url + " to "+ dest_url
     return None
 
@@ -92,7 +92,7 @@ def sub_jobs_submit( jd_executable, job_type, affinity ,  subjobs_start,  number
             # create job description
             uowd = troy.uow_description()
 
-            print jd_executable_use
+            print(jd_executable_use)
             uowd.set_attribute('Executable', jd_executable_use)
             uowd.set_attribute('NumberOfProcesses', str(jd_number_of_processes))
 
@@ -147,7 +147,7 @@ def sub_jobs_submit( jd_executable, job_type, affinity ,  subjobs_start,  number
                 uowd.set_vector_attribute('Arguments', [""])
             
             #jd.environment = ["affinity=affinity%s"%(affinity)]
-            print "affinity%s"%(affinity)
+            print("affinity%s"%(affinity))
             uowd.set_attribute('WorkingDirectory', work_dir[affinity])
             uowd.set_attribute('Output', os.path.join(work_dir[affinity], "stdout_" + job_type + \
                               "-"+ str(dare_uuid)+"-"+ str(i) + ".txt"))
@@ -156,12 +156,12 @@ def sub_jobs_submit( jd_executable, job_type, affinity ,  subjobs_start,  number
 
             uows.append(bj.assign_uow(uowd))
             
-            print "Submited sub-job " + "%d"%i + "."
+            print("Submited sub-job " + "%d"%i + ".")
                      
           
             logger.info( job_type + "subjob " + str(i))
             logger.info( "jd.number_of_processes " + str(jd_number_of_processes))
-            print "jd.arguments"
+            print("jd.arguments")
            
             logger.info("affinity%s"%(affinity))
             logger.info( "jd exec " + jd_executable_use)
@@ -170,12 +170,12 @@ def sub_jobs_submit( jd_executable, job_type, affinity ,  subjobs_start,  number
 #get the number of tasks and wait till they finish 
 def wait_for_jobs(number_of_jobs):               
 
-        print "************************ All Jobs submitted ************************" +  str(number_of_jobs)
+        print("************************ All Jobs submitted ************************" +  str(number_of_jobs))
         while 1:
             uow_states = set()
             for i in range(len(uows)):
                 uow_states.add(uows[i].get_state())
-            print 'UoW state:', uow_states
+            print('UoW state:', uow_states)
             if set([saga.job.job_state.New,saga.job.job_state.Unknown, \
                 saga.job.job_state.Running]).isdisjoint(uow_states):
                 break
@@ -187,7 +187,7 @@ def wait_for_jobs(number_of_jobs):
 
 if __name__ == "__main__":
     config = {}
-    print "DARE started at ", time.time()
+    print("DARE started at ", time.time())
     #get the current working directory
     cwd = os.getcwd()
 
@@ -209,7 +209,7 @@ if __name__ == "__main__":
     job_conf = options.job_conf
     config = initialize(job_conf)
     
-    print job_conf
+    print(job_conf)
     
     refgenome = config.get('Bfast', 'refgenome')
     job_id = config.get('Bfast', 'job_id')
@@ -248,7 +248,7 @@ if __name__ == "__main__":
     config = initialize(resource_list)
     
     for resource in resources_used:
-        print resource
+        print(resource)
         
         work_dir.append(config.get(resource, 'work_dir'))
         if (config.get(resource, 'resource_proxy') == "NA") :
@@ -331,7 +331,7 @@ if __name__ == "__main__":
             
             jd = troy.bj_description()
              
-            print "hello"             
+            print("hello")             
             RESOURCE_URL = "gram://oliver1.loni.org/jobmanager-pbs"
             DEPLOYMENT_LOCATION = '/work/smaddi2/bigjob/'
             jd.set_attribute('NumberOfProcesses', '8') # total number of agents
@@ -341,9 +341,9 @@ if __name__ == "__main__":
             jd.set_attribute('WorkingDirectory', DEPLOYMENT_LOCATION)
             jd.set_attribute('WallTimeLimit', '30')
             bj.add_resource(troy.bigjob_type.SAGA, RESOURCE_URL, jd)
-            print "Pilot Job/BigJob URL: ", bj.list_resources()
+            print("Pilot Job/BigJob URL: ", bj.list_resources())
             logger.info("resource_url" + resource_url[i])
-            print "Create manyjob service "
+            print("Create manyjob service ")
             
             RESOURCE_URL = "gram://oliver1.loni.org/jobmanager-pbs"
             DEPLOYMENT_LOCATION = 'gsiftp://oliver1.loni.org/work/smaddi2/bigjob/'
@@ -354,10 +354,10 @@ if __name__ == "__main__":
             jd.set_attribute('WorkingDirectory', DEPLOYMENT_LOCATION)
             jd.set_attribute('WallTimeLimit', '30')
             bj.add_resource(troy.bigjob_type.DIANE, RESOURCE_URL, jd)
-            print "Pilot Job/BigJob URL: ", bj.list_resources()
+            print("Pilot Job/BigJob URL: ", bj.list_resources())
             logger.info("resource_url" + resource_url[i])
             logger.info("affinity%s"%(i))            
-            print "Create manyjob service "
+            print("Create manyjob service ")
             
             
 

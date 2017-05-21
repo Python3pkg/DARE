@@ -72,7 +72,7 @@ class InvitationKey(models.Model):
     objects = InvitationKeyManager()
 
     def __unicode__(self):
-        return u"Invitation from %s on %s" % (self.from_user.username, self.date_invited)
+        return "Invitation from %s on %s" % (self.from_user.username, self.date_invited)
 
     def is_usable(self):
         """

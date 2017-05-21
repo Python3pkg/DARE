@@ -18,4 +18,4 @@ except:
     import darehthp.model.meta as meta
     conf = appconfig("config:"+ DAREHTHP_HOME +"/hthpdevel.ini", relative_to='.')
     load_environment(conf.global_conf, conf.local_conf)
-from modelhelper import *
+from .modelhelper import *

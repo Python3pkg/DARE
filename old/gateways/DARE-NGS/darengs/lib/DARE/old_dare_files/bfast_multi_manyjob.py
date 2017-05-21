@@ -8,7 +8,7 @@ import os
 import traceback
 import logging
 import many_job
-import ConfigParser
+import configparser
 import optparse
 import uuid
 
@@ -19,7 +19,7 @@ job_states = {}
 
 #initialize the conf files
 def initialize(conf_filename):
-    dare_config = ConfigParser.ConfigParser()
+    dare_config = configparser.ConfigParser()
     dare_config.read(conf_filename)
     sections = dare_config.sections()
     return dare_config
@@ -35,20 +35,20 @@ def has_finished(state):
 #TODO: should be SAGA based and pilot store
 def file_stage(source_url, dest_url):
 
-    print "(DEBUG) Now I am tranferring the files from %s to %s"%(source_url, dest_url)
+    print("(DEBUG) Now I am tranferring the files from %s to %s"%(source_url, dest_url))
     #fgeuca for clouds
     if dest_url.startswith("fgeuca"):
         try:
             #for cloud files
             cmd = "scp  -r -i /path/to/smaddi2.private %s %s"%(source_url, dest_url)
             os.system(cmd)
-        except saga.exception, e:
+        except saga.exception as e:
             error_msg = "File stage in failed : from "+ source_url + " to "+ dest_url
     else:
         try:
             cmd = "globus-url-copy  -cd  %s %s"%(source_url, dest_url)
             os.system(cmd)
-        except saga.exception, e:
+        except saga.exception as e:
             error_msg = "File stage in failed : from "+ source_url + " to "+ dest_url
     return None
 
@@ -77,7 +77,7 @@ def sub_jobs_submit( jd_executable, job_type, affinity ,  subjobs_start,  number
          
             # create job description
             jd = saga.job.description()
-            print jd_executable_use
+            print(jd_executable_use)
             jd.executable = jd_executable_use
             
             jd.number_of_processes = str(jd_number_of_processes)
@@ -121,23 +121,23 @@ def sub_jobs_submit( jd_executable, job_type, affinity ,  subjobs_start,  number
                 jd.arguments = [""]
             
             #jd.environment = ["affinity=affinity%s"%(affinity)]
-            print "affinity%s"%(affinity)
+            print("affinity%s"%(affinity))
             jd.working_directory = work_dir[affinity]
             jd.output =  os.path.join(work_dir[affinity], "stdout_" + job_type + "-"+ str(dare_uuid)+"-"+ str(i) + ".txt")
             jd.error = os.path.join(work_dir[affinity], "stderr_"+ job_type + "-"+str(dare_uuid)+ "-"+str(i) + ".txt")
             subjob = mjs[int(affinity)].create_job(jd)
             subjob.run()
-            print "Submited sub-job " + "%d"%i + "."
+            print("Submited sub-job " + "%d"%i + ".")
          
             jobs.append(subjob)
             job_start_times[subjob]=time.time()
             job_states[subjob] = subjob.get_state()
             logger.info( job_type + "subjob " + str(i))
             logger.info( "jd.number_of_processes " + str(jd.number_of_processes))
-            print "jd.arguments"
+            print("jd.arguments")
             for item in jd.arguments:
                 logger.info( "jd.arguments" + item)
-                print " ",item
+                print(" ",item)
             logger.info("affinity%s"%(affinity))
             logger.info( "jd exec " + jd.executable)
             
@@ -145,26 +145,26 @@ def sub_jobs_submit( jd_executable, job_type, affinity ,  subjobs_start,  number
 #get the number of tasks and wait till they finish 
 def wait_for_jobs(number_of_jobs):               
 
-        print "************************ All Jobs submitted ************************" +  str(number_of_jobs)
+        print("************************ All Jobs submitted ************************" +  str(number_of_jobs))
         while 1:
             finish_counter=0
             result_map = {}
             for i in range(0, number_of_jobs):
                 old_state = job_states[jobs[i]]
                 state = jobs[i].get_state()
-                if result_map.has_key(state) == False:
+                if (state in result_map) == False:
                     result_map[state]=0
                 result_map[state] = result_map[state]+1
                 #print "counter: " + str(i) + " job: " + str(jobs[i]) + " state: " + state
                 if old_state != state:
-                    print "Job " + str(jobs[i]) + " changed from: " + old_state + " to " + state
+                    print("Job " + str(jobs[i]) + " changed from: " + old_state + " to " + state)
                 if old_state != state and has_finished(state)==True:
-                     print "Job: " + str(jobs[i]) + " Runtime: " + str(time.time()-job_start_times[jobs[i]]) + " s."
+                     print("Job: " + str(jobs[i]) + " Runtime: " + str(time.time()-job_start_times[jobs[i]]) + " s.")
                 if has_finished(state)==True:
                      finish_counter = finish_counter + 1
                 job_states[jobs[i]]=state
 
-            print "Current states: " + str(result_map)
+            print("Current states: " + str(result_map))
             time.sleep(5)
             logger.info("Current states: " + str(result_map))
             if finish_counter == number_of_jobs:
@@ -229,7 +229,7 @@ if __name__ == "__main__":
     config = initialize(resource_list)
     
     for resource in resources_used:
-        print resource
+        print(resource)
         
         work_dir.append(config.get(resource, 'work_dir'))
         if (config.get(resource, 'resource_proxy') == "NA") :
@@ -320,7 +320,7 @@ if __name__ == "__main__":
 
             logger.info("resource_url" + resource_url[i])
             logger.info("affinity%s"%(i))            
-            print "Create manyjob service "
+            print("Create manyjob service ")
             #create multiple manyjobs should be changed by bfast affinity implementation
             mjs.append(many_job.many_job_service(resource_list[i], None))
         

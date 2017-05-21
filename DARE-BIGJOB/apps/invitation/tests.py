@@ -162,7 +162,7 @@ class InvitationFormTests(InvitationTestCase):
             # Invalid email.
             {
             'data': { 'email': 'example.com' },
-            'error': ('email', [u"Enter a valid e-mail address."])
+            'error': ('email', ["Enter a valid e-mail address."])
             },
             ]
 

@@ -43,6 +43,7 @@ __version__ = "0.1.2"
 # adapt it to use WebHelpers' literal() function instead.
 from django.utils import safestring, html as utils_html
 from webhelpers.html import literal
+import collections
 safestring.mark_safe = literal
 
 # Make sure conditional escape works with webhelpers literals too
@@ -165,10 +166,10 @@ are included. Fields with an underscore are also excluded.
 """
     exclude = kwds.pop('exclude', [])
     include = kwds.pop('include', [])
-    for k, v in fields.items():
+    for k, v in list(fields.items()):
         if include and (k not in include):
             continue
-        if hasattr(model, k) and not callable(getattr(model, k)) and k not in exclude:
+        if hasattr(model, k) and not isinstance(getattr(model, k), collections.Callable) and k not in exclude:
             setattr(model, k, v)
             
 
@@ -236,7 +237,7 @@ literal(u'<input type="text" name="user" value="john doe">')
         self.cleaned_data = self.data
         try:
             self.cleaned_data = self.clean()
-        except ValidationError, e:
+        except ValidationError as e:
             self._errors[forms.NON_FIELD_ERRORS] = e.messages
         if self._errors:
             delattr(self, 'cleaned_data')
@@ -249,7 +250,7 @@ literal(u'<input type="text" name="user" value="john doe">')
     errors = property(_get_errors)
     
     def __html__(self):
-        return unicode(self)
+        return str(self)
         
     def __unicode__(self):
         # unbound forms should return the HTML unmodified. If this was passed
@@ -262,7 +263,7 @@ literal(u'<input type="text" name="user" value="john doe">')
         if not self.is_bound:
             defaults = self.initial.copy()
             # using WebHelpers, boolean values cannot be True; they must be '1'
-            for key, value in defaults.items():
+            for key, value in list(defaults.items()):
                 if value is True:
                     defaults[key] = '1'
             return literal(formencode.htmlfill.render(
@@ -274,7 +275,7 @@ literal(u'<input type="text" name="user" value="john doe">')
         else:
             defaults = self.data.copy()
             # using WebHelpers, boolean values cannot be True; they must be '1'
-            for key, value in defaults.items():
+            for key, value in list(defaults.items()):
                 if value is True:
                     defaults[key] = '1'
             return literal(formencode.htmlfill.render(
@@ -325,14 +326,14 @@ True
         self.cleaned_data = {}
         try:
             self.cleaned_data = self.to_python(self.data)
-        except formencode.validators.Invalid, e:
+        except formencode.validators.Invalid as e:
             self._errors = e.unpack_errors()
             
         try:
             self.cleaned_data = self.clean()
-        except formencode.validators.Invalid, e:
+        except formencode.validators.Invalid as e:
             self._errors[forms.NON_FIELD_ERRORS] = e.unpack_errors()
-        except ValidationError, e:
+        except ValidationError as e:
             self._errors[forms.NON_FIELD_ERRORS] = e.messages
         if self._errors:
             delattr(self, 'cleaned_data')

@@ -56,7 +56,7 @@ class NAMDForm(forms.Form):
                        
             super(NAMDForm, self).__init__(*args, **kwargs)
                        
-            print int(numresources)
+            print(int(numresources))
             j = int(numresources)
 
             for i in range(1, j+1):
